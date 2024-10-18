@@ -107,24 +107,65 @@ def encryption_challenge(difficulty):
     print(f"Decrypted: {decrypted_message}")
     return points_based_on_difficulty(difficulty, 4)
 
-# Capture the Flag Challenge (Realistic CTF)
+# Enhanced Capture the Flag Challenge
 def capture_the_flag(difficulty):
     print_pause("You've entered a high-security server room for a Capture the Flag challenge.")
-    print_pause("To capture the flag, you must solve the following challenge:")
+    print_pause("Your mission is to hunt for the flag hidden within the network environment.")
     
-    # A basic CTF challenge with realistic context
-    print_pause("You need to find the flag in the log files of a compromised server.")
-    print_pause("The flag format is CTF{...}. Search for the keyword 'flag' in the logs.")
-
-    # Simulating a log file search
-    flag_found = random.choice([True, False])  # Randomly determine if the player finds the flag
-    if flag_found:
-        print_pause("Congratulations! You found the flag: CTF{You_Captured_The_Flag!}")
-        inventory.append("CTF Flag")
-        return points_based_on_difficulty(difficulty, 10)
-    else:
-        print_pause("No flag found in the logs. You failed to capture it.")
-        return 0  # No points for failure
+    clues = [
+        "Check the hidden directories for files named 'flag.txt'.",
+        "Look at the user logs for any hints about recent activities.",
+        "Investigate the database for any unusual queries or entries.",
+        "Analyze network traffic for any suspicious packets."
+    ]
+    
+    found_clues = []
+    flag_found = False
+    
+    while not flag_found:
+        print_pause("\nYou can search for clues. Choose an option:")
+        for i, clue in enumerate(clues):
+            if clue not in found_clues:
+                print(f"{i + 1}. {clue}")
+        
+        choice = input("Enter the number of the clue you want to investigate: ")
+        
+        if choice.isdigit() and 1 <= int(choice) <= len(clues):
+            clue_index = int(choice) - 1
+            
+            if clues[clue_index] not in found_clues:
+                found_clues.append(clues[clue_index])
+                print_pause(f"You investigated: {clues[clue_index]}")
+                
+                # Simulate finding a flag after a certain number of clues
+                if len(found_clues) >= 3:  # Requires 3 clues to find the flag
+                    print_pause("You pieced together the clues and found the flag location!")
+                    # Final flag search
+                    final_choice = input("Do you want to search for the flag? (yes/no): ").lower()
+                    if final_choice == "yes":
+                        # Simulate finding the flag based on difficulty
+                        if difficulty == "hard":
+                            print_pause("Searching for the flag...")
+                            time.sleep(5)  # Simulate a long search time
+                            success = random.choice([True, False])  # Randomly determine success
+                            if success:
+                                print_pause("Congratulations! You found the flag: CTF{You_Captured_The_Flag!}")
+                                inventory.append("CTF Flag")
+                                return points_based_on_difficulty(difficulty, 25)
+                            else:
+                                print_pause("You were detected during your search. No flag found.")
+                                return 0  # No points for failure
+                        else:  # Easy or Medium
+                            print_pause("Congratulations! You found the flag: CTF{You_Captured_The_Flag!}")
+                            inventory.append("CTF Flag")
+                            return points_based_on_difficulty(difficulty, 15)
+            else:
+                print_pause("You've already investigated this clue. Choose another.")
+        else:
+            print_pause("Invalid choice. Please select a valid clue number.")
+    
+    print_pause("You failed to find the flag in time. Try again next time.")
+    return 0  # No points for failure
 
 # Points based on difficulty level
 def points_based_on_difficulty(difficulty, base_points):
@@ -194,14 +235,7 @@ def play_game():
     # Ask if the player wants to play again
     play_again = input("Would you like to play again? (y/n): ").lower()
     if play_again == "y":
-        print_pause("Restarting the game...")
-        inventory.clear()  # Clear inventory for a fresh start
-        global player_score, player_rank
-        player_score = 0
-        player_rank = "Novice"
         play_game()
-    else:
-        print_pause("Thank you for playing! Goodbye.")
 
 # Start the game
 play_game()
